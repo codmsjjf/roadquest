@@ -26,15 +26,13 @@ jobs:
           yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses > /dev/null || true
           $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0"
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x ./gradlew || true
-
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: "9.3.1"
 
       - name: Ensure debug keystore exists
+        working-directory: roadquest
         run: |
           if [ ! -f debug.keystore ]; then
             keytool -genkeypair -v \
@@ -46,6 +44,7 @@ jobs:
           fi
 
       - name: Write .env
+        working-directory: roadquest
         run: |
           cat > .env << EOF
           MAPS_API_KEY=${{ secrets.MAPS_API_KEY }}
@@ -53,10 +52,11 @@ jobs:
           EOF
 
       - name: Build debug APK
+        working-directory: roadquest
         run: gradle assembleDebug --no-daemon
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: roadquest-debug-apk
-          path: app/build/outputs/apk/debug/*.apk
+          path: roadquest/app/build/outputs/apk/debug/*.apk
