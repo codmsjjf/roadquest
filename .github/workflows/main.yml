@@ -50,6 +50,10 @@ jobs:
           MAPS_API_KEY=${{ secrets.MAPS_API_KEY }}
           GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}
           EOF
+          cat > .env.example << EOF
+          MAPS_API_KEY=DEFAULT_MAPS_API_KEY
+          GEMINI_API_KEY=MY_GEMINI_API_KEY
+          EOF
 
       - name: Build debug APK
         working-directory: roadquest
